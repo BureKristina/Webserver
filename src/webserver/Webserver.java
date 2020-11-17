@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 class WebServer extends Thread {
 
     //all html files are in one folder with the path in PATH_TO_HTML_FILES
-    static final String PATH_TO_HTML_FILES = "C:\\Users\\tinab\\Desktop\\VVS HTML Files\\";
+    static final String PATH_TO_HTML_FILES = "D:\\IntelliJ\\Projects\\VVS Webserver\\HTML Files\\";
     static final String INDEX = "index.html";
     static final String LINK = "link.html";
     static final String MAINTENANCE = "maintenance.html";
@@ -20,7 +20,7 @@ class WebServer extends Thread {
         ServerSocket serverSocket = null;
 
         try {
-            serverSocket = new ServerSocket(10008); 
+            serverSocket = new ServerSocket(10008);
             System.out.println("Connection Socket Created");
             try {
                 while (true) {
@@ -73,15 +73,15 @@ class WebServer extends Thread {
 
             switch (serverState){
                 case 0: //server stopped
-                    Stopped(outputToBrowser, CONNECTION_TIMEOUT);
+                    stopped(outputToBrowser, CONNECTION_TIMEOUT);
                     break;
 
                 case 1: //server running
-                    Running(outputToBrowser, fileRequested);
+                    running(outputToBrowser, fileRequested);
                     break;
 
                 case 2: //server maintenance
-                    Maintenance(outputToBrowser, MAINTENANCE);
+                    maintenance(outputToBrowser, MAINTENANCE);
                     break;
             }
 
@@ -95,14 +95,14 @@ class WebServer extends Thread {
         }
     }
 
-    protected int Stopped(PrintWriter out, String file) {
+    protected int stopped(PrintWriter out, String file) {
 
         int stopOk = 0; //for testing
         if(file.equals("stopped.html")) {
             String fileName = PATH_TO_HTML_FILES + file;
-            String fileContent = ReadFromFile(fileName);
+            String fileContent = readFromFile(fileName);
 
-            PrintToBrowser(out, "HTTP/1.1 522 Connection timed out");
+            printToBrowser(out, "HTTP/1.1 522 Connection timed out");
 
             out.println(fileContent);
             out.flush();
@@ -111,7 +111,7 @@ class WebServer extends Thread {
         return stopOk;
     }
 
-    protected int Running(PrintWriter out, String fileRequested) {
+    protected int running(PrintWriter out, String fileRequested) {
 
         int state = 0; //1 for first if, 2 for else if, 3 for else, for testing
         String fileName = PATH_TO_HTML_FILES, fileContent;
@@ -119,9 +119,9 @@ class WebServer extends Thread {
 
             fileName += INDEX;
 
-            fileContent = ReadFromFile(fileName);
+            fileContent = readFromFile(fileName);
 
-            PrintToBrowser(out, "HTTP/1.1 200 OK");
+            printToBrowser(out, "HTTP/1.1 200 OK");
 
             out.println(fileContent);
             out.flush();
@@ -131,9 +131,9 @@ class WebServer extends Thread {
 
             fileName += LINK;
 
-            fileContent = ReadFromFile(fileName);
+            fileContent = readFromFile(fileName);
 
-            PrintToBrowser(out, "HTTP/1.1 200 OK");
+            printToBrowser(out, "HTTP/1.1 200 OK");
 
             out.println(fileContent);
             out.flush();
@@ -142,9 +142,9 @@ class WebServer extends Thread {
         } else {
             fileName += FILE_NOT_FOUND;
 
-            fileContent = ReadFromFile(fileName);
+            fileContent = readFromFile(fileName);
 
-            PrintToBrowser(out, "HTTP/1.1 404 File Not Found");
+            printToBrowser(out, "HTTP/1.1 404 File Not Found");
 
             out.println(fileContent);
             out.flush();
@@ -154,14 +154,14 @@ class WebServer extends Thread {
         return state;
     }
 
-    private int Maintenance(PrintWriter out, String file) {
+    private int maintenance(PrintWriter out, String file) {
 
         int maintenanceOk = 0; //for testing
         if(file.equals("maintenance.html")) {
             String fileName = PATH_TO_HTML_FILES + file;
-            String fileContent = ReadFromFile(fileName);
+            String fileContent = readFromFile(fileName);
 
-            PrintToBrowser(out, "HTTP/1.1 200 OK");
+            printToBrowser(out, "HTTP/1.1 200 OK");
 
             out.println(fileContent);
             out.flush();
@@ -171,7 +171,7 @@ class WebServer extends Thread {
         return maintenanceOk;
     }
 
-    protected String ReadFromFile(String fileName) {
+    protected String readFromFile(String fileName) {
 
         String fileContent = null;
         try {
@@ -197,8 +197,8 @@ class WebServer extends Thread {
         return fileContent;
     }
 
-    private void PrintToBrowser(PrintWriter out, String httpForm) {
-        out.println(httpForm);
+    private void printToBrowser(PrintWriter out, String httpForm) {
+        out.println(httpForm); //HTTP/1.1 200 OK
         out.println("Content-Type: text/html");
         out.println("\r\n");
         out.flush();
